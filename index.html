@@ -1,172 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form Exercise</title>
+    <link rel="stylesheet" href="./css/style.css"> <!-- Link to external CSS file for styling -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f5f5f5;
-            overflow-y: hidden;
-        }
-        
-
-        form {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 15px;
-            width: 350px;
-        }
-
-        .error {
-            color: red;
-            font-size: 0.9em;
-            margin-top: 5px;
-            display: block;
-        }
-
-        input[type="submit"] {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            width:300px;
-            
-        }
-         input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        select,
-        textarea {
-            margin-bottom: 10px; /* Increased margin for better spacing */
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px; /* Border radius for input fields */
-            box-sizing: border-box;
-        }
-        label {
-            font-weight: bold;
-        }
-
-        
-    </style>
 </head>
+
 <body>
     <form id="exerciseForm">
+        <h1>Form Exercise</h1>
+
         <label for="firstName">First Name: </label>
-        <input type="text" id="firstName" name="firstName" required>
-        <span class="error" id="firstNameError"></span>
+        <input type="text" id="firstName" name="firstName">
+        <span class="error" id="firstNameError"></span> <!-- Custom error message for First Name -->
 
         <label for="lastName">Last Name: </label>
-        <input type="text" id="lastName" name="lastName" required>
-        <span class="error" id="lastNameError"></span>
+        <input type="text" id="lastName" name="lastName">
+        <span class="error" id="lastNameError"></span> <!-- Custom error message for Last Name -->
 
         <label for="dob">Date of Birth: </label>
-        <input type="text" id="dob" name="dob"><br>
+        <input type="text" id="dob" name="dob"><br> <!-- jQuery datepicker will be initialized here -->
 
         <label for="university">University: </label>
-        <select id="university" name="university" >
+        <select id="university" name="university">
             <option value="" disabled selected>Select your university</option>
             <option value="University 1">University 1</option>
             <option value="University 2">University 2</option>
             <option value="University 3">University 3</option>
         </select><br>
 
-        <label for="gender">Gender: </label>
-        <input type="radio" name="gender" value="Male" required> Male
-        <input type="radio" name="gender" value="Female" required> Female<br>
+        <label>Gender: </label>
+        <input type="radio" id="male" name="gender" value="Male">
+        <label for="male">Male</label> <!-- Gender label is clickable -->
+        <input type="radio" id="female" name="gender" value="Female">
+        <label for="female">Female</label><br> <!-- Gender label is clickable -->
 
         <label for="mobile">Mobile Number: </label>
-        <input type="text" id="mobile" name="mobile" required>
-        <span class="error" id="mobileError"></span>
+        <input type="text" id="mobile" name="mobile">
+        <span class="error" id="mobileError"></span> <!-- Custom error message for Mobile Number -->
 
         <label for="email">Email Address: </label>
-        <input type="email" id="email" name="email" required>
-        <span class="error" id="emailError"></span>
+        <input type="text" id="email" name="email">
+        <span class="error" id="emailError"></span> <!-- Custom error message for Email Address -->
 
         <label for="password">Password: </label>
-        <input type="password" id="password" name="password" required><br>
+        <input type="password" id="password" name="password"><br>
 
         <label for="confirmPassword">Confirm Password: </label>
-        <input type="password" id="confirmPassword" name="confirmPassword" required>
-        <span class="error" id="confirmPasswordError"></span>
+        <input type="password" id="confirmPassword" name="confirmPassword">
+        <span class="error" id="confirmPasswordError"></span> <!-- Custom error message for Confirm Password -->
 
-        <label for="favouriteFood">Favourite Food: </label><br>
-        <input type="checkbox" name="food" value="Pizza"> Pizza<br>
-        <input type="checkbox" name="food" value="Burger"> Burger<br>
-        <input type="checkbox" name="food" value="Pasta"> Pasta<br>
+        <label>Favourite Food: </label><br>
+        <input type="checkbox" id="pizza" name="food" value="Pizza">
+        <label for="pizza">Pizza</label> <!-- Checkbox label is clickable -->
+        <input type="checkbox" id="burger" name="food" value="Burger">
+        <label for="burger">Burger</label> <!-- Checkbox label is clickable -->
+        <input type="checkbox" id="pasta" name="food" value="Pasta">
+        <label for="pasta">Pasta</label><br> <!-- Checkbox label is clickable -->
 
         <label for="message">Message: </label><br>
         <textarea id="message" name="message"></textarea><br><br>
 
         <input type="submit" value="Submit">
     </form>
+    <!-- when form submit is time this form data display in table -->
+    <table id="resultTable" style="display: none;">
+        <thead>
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody></tbody> <!-- Table to display form values upon successful submission -->
+    </table>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script>
-        $(document).ready(function(){
-            // datepicker jQuery
-            $("#dob").datepicker({ dateFormat: 'dd-mm-yy' });
-
-            // Form validation using JavaScript
-            document.getElementById('exerciseForm').addEventListener('submit', function(e){
-                var valid = true;
-
-                // Clear previous error messages
-                document.querySelectorAll('.error').forEach(function(el) {
-                    el.textContent = '';
-                });
-
-                //  first name validation
-                var firstName = document.getElementById('firstName').value.trim();
-                if (!firstName || /\d/.test(firstName)) {
-                    valid = false;
-                    document.getElementById('firstNameError').textContent = 'shouldn’t contain numeric';
-                }
-
-                //  last name validation 
-                var lastName = document.getElementById('lastName').value.trim();
-                if (!lastName || /\d/.test(lastName)) {
-                    valid = false;
-                    document.getElementById('lastNameError').textContent = 'shouldn’t contain numeric';
-                }
-
-                //  email validation
-                var email = document.getElementById('email').value.trim();//trime remove the space 
-                if (!email || !/\S+@\S+\.\S+/.test(email)) {
-                    valid = false;
-                    document.getElementById('emailError').textContent = 'should contain @ and .';
-                }
-
-                //  mobile number validation
-                var mobile = document.getElementById('mobile').value.trim();
-                if (!mobile || !/^\d{10}$/.test(mobile)) {
-                    valid = false;
-                    document.getElementById('mobileError').textContent = 'exact 10 digits, shouldn’t contain alphabetics';
-                }
-
-                // password validation when password and confirm password not match is time message is display
-                var password = document.getElementById('password').value;
-                var confirmPassword = document.getElementById('confirmPassword').value;
-                if (!password || !confirmPassword || password !== confirmPassword) {
-                    valid = false;
-                    document.getElementById('confirmPasswordError').textContent = 'Passwords are required and must match.';
-                }
-
-                if (!valid) {
-                    e.preventDefault(); // Prevent form submission
-                }
-            });
-        });
-    </script>
+    <script src="./js/script.js"></script>
 </body>
+
 </html>
